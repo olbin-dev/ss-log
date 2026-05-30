@@ -509,6 +509,9 @@
         <li class="menu-item" onclick="switchPost(6, this)">
           <span>🏎️</span> SS-FIA Technical Data
         </li>
+        <li class="menu-item" onclick="switchPost(7, this)">
+          <span>📈</span> Macro Engine MVP
+        </li>
       </ul>
     </div>
 
@@ -1168,6 +1171,193 @@ CREATE TABLE UISnapshot (
           </ul>
           
           <p>Please refer to the specific section documents for details.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- POST 7: MACRO ENGINE MVP -->
+    <article id="post-7" class="post-card">
+      <div class="meta-info">
+        <span>2026-05-30</span>
+        <span class="tag">Macro Engine</span>
+        <span class="tag">MVP</span>
+        <span class="tag">Streamlit</span>
+        <span class="tag">FRED API</span>
+      </div>
+
+      <!-- JA -->
+      <div class="lang-section ja active">
+        <h1 class="post-title">マクロ → 産業翻訳エンジン (Macro Engine) MVP &amp; ロードマップ</h1>
+        <div class="post-content">
+          <p>マクロ経済指標の変動を分析し、各産業セクターへの影響度を決定論的にスコアリング・ランク付けする「マクロ → 産業翻訳エンジン (Macro Engine)」の開発仕様と将来のロードマップです。</p>
+
+          <h2>1. 概要とディレクトリ構成</h2>
+          <p>本ツールは、セントルイス連邦準備銀行（FRED）などのAPIからリアルタイムにマクロ経済データを取得し、あらかじめ定義された影響度マトリックスに基づいて、17の主要産業セクターのスコアを自動算出します。</p>
+          
+          <pre><code>/Users/p/FIA/translation_engine/
+├── README.md                 <span class="comment"># プロジェクトの概要とセットアップ</span>
+├── requirements.txt          <span class="comment"># 依存パッケージ</span>
+├── main.py                   <span class="comment"># 統合CLIデモ実行スクリプト</span>
+├── app.py                    <span class="comment"># StreamlitベースのWebダッシュボード</span>
+└── src/
+    ├── schema.py             <span class="comment"># 17セクター、影響度マトリックス定義</span>
+    ├── detector.py           <span class="comment"># 変動・重篤度検知 (EventDetector)</span>
+    ├── engine.py             <span class="comment"># 加重合計スコアリング (RuleEngine)</span>
+    └── ingestion.py          <span class="comment"># FRED APIデータ取得</span></code></pre>
+
+          <h2>2. コア計算ロジック</h2>
+          <p>主要な指標の期間変化率（金利はパーセントポイント、原油や為替はパーセント変化）を検知し、重篤度（Severity: 1〜3）を乗じた加重合計でセクター毎のスコアを算出します：</p>
+          
+          <div class="card card-info">
+            <div class="card-label label-info">数式モデル (Mathematical Formula)</div>
+            <p><strong>スコア算出:</strong> <code>Score = Σ (Base Impact Weight × Severity)</code></p>
+            <p><strong>スコア正規化:</strong> <code>Normalized Score = Score / Max(|Scores|)</code></p>
+          </div>
+
+          <h3>イベント検知基準 (EventDetector)</h3>
+          <ul>
+            <li><strong>10年債利回り変化 (30日間)</strong>: +0.25% (Severity 1), +0.5% (Severity 2), +1.0% (Severity 3) で <code>long_rate_spike</code> を検知。</li>
+            <li><strong>CPI前年比 (YoY)</strong>: &gt; 2% (Severity 1), &gt; 3% (Severity 2), &gt; 5% (Severity 3) で <code>inflation_high</code> を検知。</li>
+            <li><strong>WTI原油価格 (30日間)</strong>: ±10% (Severity 1), ±20% (Severity 2), ±40% (Severity 3) で <code>oil_price_spike</code> / <code>oil_price_crash</code> を検知。</li>
+            <li><strong>為替ドル円 (30日間)</strong>: ±2% (Severity 1), ±5% (Severity 2), ±10% (Severity 3) で <code>yen_weakening</code> / <code>yen_strengthening</code> を検知。</li>
+          </ul>
+
+          <h2>3. テストと動作検証</h2>
+          <p>APIのモック経路、データフレーム処理などを検証するテスト（pytest）がすべてパスしています：</p>
+          <pre><code>tests/test_ingestion.py ....                                             [ 44%]
+tests/test_translation.py .....                                          [100%]
+============================== 9 passed in 0.27s ===============================</code></pre>
+
+          <h2>4. 将来の開発ロードマップ (Phases 1-5)</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num resolved">1</div>
+              <div class="step-content">
+                <div class="step-title">コアロジックとWebモックアップの構築 (完了)</div>
+                <p>ルールエンジンとFREDデータ取得、Streamlit（<a href="https://macro.z0a.net" target="_blank">macro.z0a.net</a>）によるWebダッシュボードを開発。</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <div class="step-title">個別株評価とスクリーニング (ミクロ結合)</div>
+                <p>yfinanceやJ-QuantsからPER/PBR/ROE/自己資本比率等の個別銘柄データを取得し、マクロスコアと結合したBUY/WATCH/AVOID判定スクリーナーを開発。</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="step-title">103イベントデータベースと日本国内データの拡張</div>
+                <p>総務省統計局などから国内マクロデータ（国内CPI、日銀政策金利、日銀短観）の取得に対応し、イールドカーブ逆転などの103個のマクロイベントを完全網羅。</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <div class="step-title">プレミアムデスクトップGUI (PySide6)</div>
+                <p>PySide6 (Qt for Python) による洗練されたダークモード対応デスクトップクライアントアプリを開発。</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-content">
+                <div class="step-title">ローカルキャッシュとスタンドアロン配布</div>
+                <p>SQLiteキャッシュによるオフライン動作対応と、PyInstallerを使用したmacOS/Windows用スタンドアロンアプリのビルドパッケージング。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EN -->
+      <div class="lang-section en">
+        <h1 class="post-title">Macro → Industry Translation Engine (Macro Engine) MVP &amp; Roadmap</h1>
+        <div class="post-content">
+          <p>Technical specifications and future development roadmap for the Macro Engine, a tool designed to parse macroeconomic trends and score their impact on individual industry sectors.</p>
+
+          <h2>1. Overview &amp; Directory Layout</h2>
+          <p>The engine fetches macroeconomic indicators in real-time from APIs (such as FRED) and automatically computes contribution scores for 17 core industry sectors based on dynamic impact rules.</p>
+          
+          <pre><code>/Users/p/FIA/translation_engine/
+├── README.md                 <span class="comment"># Project overview and setup</span>
+├── requirements.txt          <span class="comment"># Dependency packages</span>
+├── main.py                   <span class="comment"># CLI demo script</span>
+├── app.py                    <span class="comment"># Streamlit interactive web dashboard</span>
+└── src/
+    ├── schema.py             <span class="comment"># 17 sectors, impact matrix</span>
+    ├── detector.py           <span class="comment"># EventDetector (anomaly and severity logic)</span>
+    ├── engine.py             <span class="comment"># RuleEngine (scoring calculations)</span>
+    └── ingestion.py          <span class="comment"># Ingestion client</span></code></pre>
+
+          <h2>2. Core Mathematical Logic</h2>
+          <p>Detects the rate of change over a 30-day window (percentage points for interest rates, percentage change for commodities/forex) and weights the base impacts by event severity (levels 1-3):</p>
+          
+          <div class="card card-info">
+            <div class="card-label label-info">Mathematical Model</div>
+            <p><strong>Score Formulation:</strong> <code>Score = Σ (Base Impact Weight × Severity)</code></p>
+            <p><strong>Normalization:</strong> <code>Normalized Score = Score / Max(|Scores|)</code></p>
+          </div>
+
+          <h3>Event Detection Thresholds (EventDetector)</h3>
+          <ul>
+            <li><strong>10-Year Yield change (30 days)</strong>: +0.25% (Severity 1), +0.5% (Severity 2), +1.0% (Severity 3) triggers <code>long_rate_spike</code>.</li>
+            <li><strong>YoY CPI Inflation</strong>: &gt; 2% (Severity 1), &gt; 3% (Severity 2), &gt; 5% (Severity 3) triggers <code>inflation_high</code>.</li>
+            <li><strong>WTI Crude Oil price (30 days)</strong>: ±10% (Severity 1), ±20% (Severity 2), ±40% (Severity 3) triggers <code>oil_price_spike</code> / <code>oil_price_crash</code>.</li>
+            <li><strong>USD/JPY exchange rate (30 days)</strong>: ±2% (Severity 1), ±5% (Severity 2), ±10% (Severity 3) triggers <code>yen_weakening</code> / <code>yen_strengthening</code>.</li>
+          </ul>
+
+          <h2>3. Automated Verification</h2>
+          <p>All ingestion, data processing, and rule math tests pass successfully via pytest:</p>
+          <pre><code>tests/test_ingestion.py ....                                             [ 44%]
+tests/test_translation.py .....                                          [100%]
+============================== 9 passed in 0.27s ===============================</code></pre>
+
+          <h2>4. Future Roadmap (Phases 1-5)</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num resolved">1</div>
+              <div class="step-content">
+                <div class="step-title">Core Engine &amp; Web Mockup (Completed)</div>
+                <p>Designed the Rule Engine, integrated Fred data fetcher, and deployed the interactive Streamlit dashboard (<a href="https://macro.z0a.net" target="_blank">macro.z0a.net</a>).</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <div class="step-title">Stock Valuation &amp; Screening (Micro Integration)</div>
+                <p>Fetch fundamental metrics (PER, PBR, Dividend Yield, ROE) from yfinance or J-Quants APIs to create a BUY/WATCH/AVOID screener scoring mechanism.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="step-title">103-Event Library &amp; Domestic Data Expansion</div>
+                <p>Add support for Japanese domestic indicators (CPI, BOJ Policy Rates, BOJ Tankan) and complete mapping for all 103 macroeconomic events.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <div class="step-title">Premium Desktop Client GUI (PySide6)</div>
+                <p>Develop a high-fidelity desktop client using PySide6 (Qt for Python) featuring custom widgets and dynamic dark styling.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-content">
+                <div class="step-title">SQLite Cache &amp; Standalone Package Release</div>
+                <p>Implement local database caching for offline operation and package application bundle files for macOS (DMG/APP) and Windows (EXE).</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </article>
