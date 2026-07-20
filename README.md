@@ -1,5 +1,9 @@
 # Sovereign Systems (SS) Technical Log
 
+> **[🔥 Product page: Sovereign Systems Log](https://olbin.dev/ss-log.html)** · [日本語](https://olbin.dev/ss-log-ja.html) · [GitHub Pages](https://olbin-dev.github.io/SSjapantokyokugahara/)  
+> *Public technical log for local AI ops, Goose↔Ollama, and Anchor LLM / Causa.*
+
+
 Sovereign Systems (SS) 技術日誌・技術ノートの公開リポジトリです。ローカルAI環境の構築記録や、自律実行エンジン Causa / Anchor DB の設計ドキュメントを管理しています。
 
 ## 📖 技術日誌リスト (Technical Logs)
@@ -31,3 +35,17 @@ Causa Core ライブラリのアルファバージョンリリース内容と、
 
 ## 🪿 Goose → Ollama Troubleshooting Guide Interactive UI
 <iframe src="https://claude.site/public/artifacts/05a5fe94-33e5-4706-a822-b0421fcb3bf2/embed" title="Claude Artifact" width="100%" height="600" frameborder="0" allow="clipboard-write"></iframe>
+
+
+## Related projects ([olbin.dev](https://olbin.dev/))
+
+| Project | Role |
+|---------|------|
+| [cAgent](https://github.com/olbin-dev/cAgent) | OpenClaw ↔ AgentKit JSON-RPC bridge — [case study](https://olbin.dev/factory.html) |
+| [Vault Sync for Dropbox](https://github.com/olbin-dev/plugin) | Obsidian ↔ Dropbox sync — [product page](https://olbin.dev/vault-sync.html) |
+| [Local LLM Brain Chat](https://github.com/olbin-dev/obisidian-Plugin-LocalLLM) | Obsidian ↔ local llama.cpp — [product page](https://olbin.dev/local-llm.html) |
+| [LogosCyber](https://github.com/olbin-dev/logos-cyber) | Nuclei template AI scanner — [product page](https://olbin.dev/logos-cyber.html) |
+| [Terminal Image Paster](https://github.com/olbin-dev/Terminal-image-paster) | VS Code clipboard→terminal paths — [product page](https://olbin.dev/terminal-image-paster.html) |
+| [Sovereign Systems Log](https://github.com/olbin-dev/SSjapantokyokugahara) | Technical log — [product page](https://olbin.dev/ss-log.html) |
+| [All projects](https://olbin.dev/projects.html) | Full catalog on olbin.dev |
+
