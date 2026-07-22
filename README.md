@@ -1,6 +1,6 @@
 # Sovereign Systems (SS) Technical Log
 
-> **[🔥 Product page: Sovereign Systems Log](https://olbin.dev/ss-log.html)** · [日本語](https://olbin.dev/ss-log-ja.html) · [GitHub Pages](https://olbin-dev.github.io/SSjapantokyokugahara/)  
+> **[🔥 Product page: Sovereign Systems Log](https://olbin.dev/ss-log.html)** · [日本語](https://olbin.dev/ss-log-ja.html) · [GitHub Pages](https://olbin-dev.github.io/ss-log/)  
 > *Public technical log for local AI ops, Goose↔Ollama, and Anchor LLM / Causa.*
 
 
@@ -46,6 +46,6 @@ Causa Core ライブラリのアルファバージョンリリース内容と、
 | [Local LLM Brain Chat](https://github.com/olbin-dev/obisidian-Plugin-LocalLLM) | Obsidian ↔ local llama.cpp — [product page](https://olbin.dev/local-llm.html) |
 | [LogosCyber](https://github.com/olbin-dev/logos-cyber) | Nuclei template AI scanner — [product page](https://olbin.dev/logos-cyber.html) |
 | [Terminal Image Paster](https://github.com/olbin-dev/Terminal-image-paster) | VS Code clipboard→terminal paths — [product page](https://olbin.dev/terminal-image-paster.html) |
-| [Sovereign Systems Log](https://github.com/olbin-dev/SSjapantokyokugahara) | Technical log — [product page](https://olbin.dev/ss-log.html) |
+| [Sovereign Systems Log](https://github.com/olbin-dev/ss-log) | Technical log — [product page](https://olbin.dev/ss-log.html) |
 | [All projects](https://olbin.dev/projects.html) | Full catalog on olbin.dev |
 
